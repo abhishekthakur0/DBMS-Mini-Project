@@ -9,7 +9,5 @@ Description :
   
   
 Project Url:
-  Source : https://github.com/asishchourasia/City-Without-Crime.git
-  
-  
-Name : Asish Kumar Chourasia.
+  Source : https://github.com/kumarcops/DBMS-Mini-Project
+Name : Abhishek Thakur
