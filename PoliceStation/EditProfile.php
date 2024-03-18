@@ -8,7 +8,7 @@ if (!isset($_SESSION)) {
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Crime Management System</title>
-        <link href="templatemo_style.css" rel="stylesheet" type="text/css" />
+        <link href="../templatemo_style.css" rel="stylesheet" type="text/css" />
         <style type="text/css">
             <!--
             .style1 {font-weight: bold}

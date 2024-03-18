@@ -22,35 +22,54 @@
                     <h2>Latest News</h2>
                     <table width="100%" border="0" bordercolor="#2AA2C7" >
 
-                        <?php
+                    <?php
 // Establish Connection with Database
-                        $con = mysql_connect("localhost", "root");
-// Select Database
-                        mysql_select_db("cms", $con);
+$con = mysqli_connect("localhost", "root", "", "cms");
+
+// Check connection
+if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    exit();
+}
+
 // Specify the query to execute
-                        $sql = "select * from News_Tbl";
+$sql = "SELECT * FROM News_Tbl";
+
 // Execute query
-                        $result = mysql_query($sql, $con);
-// Loop through each records 
-                        while ($row = mysql_fetch_array($result)) {
-                            $Id = $row['News_Id'];
-                            $News = $row['News_Title'];
-                            $Date = $row['News_Date'];
-                            ?>
+$result = mysqli_query($con, $sql);
+
+// Check if query execution was successful
+if (!$result) {
+    echo "Error: " . mysqli_error($con);
+    exit();
+}
+
+// Loop through each record
+while ($row = mysqli_fetch_array($result)) {
+    $Id = $row['News_Id'];
+    $News = $row['News_Title'];
+    $Date = $row['News_Date'];
+    // Your code to display or use the fetched data goes here
+}
+
+
+?>
+
                             <tr>
                                 <td class="style6"><div align="left" class="style9 style5 style4 style3"><strong></strong></div><img src="images/templatemo_list_icon.png" width="13" height="13" /></td>
                                 <td class="style6"><div align="left" class="style9 style5 style4 style3"><strong><?php echo "Date:" . $Date . ":" . $News; ?></strong></div></td>
 
                             </tr>
                             <?php
-                        }
 // Retrieve Number of records returned
-                        $records = mysql_num_rows($result);
-                        ?>
-                        <?php
+$records = mysqli_num_rows($result);
+?>
+
+<?php
 // Close the connection
-                        mysql_close($con);
-                        ?>
+mysqli_close($con);
+?>
+
                     </table>
                     <p>&nbsp;</p>
                     <div class="cleaner"></div>

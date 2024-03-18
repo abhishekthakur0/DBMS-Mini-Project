@@ -24,22 +24,37 @@
                     <h2>Most Wanted</h2>
                     <?php
 // Establish Connection with Database
-                    $con = mysql_connect("localhost", "root");
-// Select Database
-                    mysql_select_db("cms", $con);
+$con = mysqli_connect("localhost", "root", "", "cms");
+// Check connection
+if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    exit();
+}
+
 // Specify the query to execute
-                    $sql = "select * from mostwanted_tbl order by Station_Name";
+$sql = "SELECT * FROM mostwanted_tbl ORDER BY Station_Name";
 // Execute query
-                    $result = mysql_query($sql, $con);
-// Loop through each records 
-                    while ($row = mysql_fetch_array($result)) {
-                        $Id = $row['Wanted_Id'];
-                        $Name = $row['Wanted_Name'];
-                        $Loc = $row['Wanted_Location'];
-                        $Crime = $row['Wanted_Crime'];
-                        $Desc = $row['Wanted_Desc'];
-                        $Photo = $row['Wanted_Image'];
-                        ?>
+$result = mysqli_query($con, $sql);
+
+// Check if query execution was successful
+if (!$result) {
+    echo "Error: " . mysqli_error($con);
+    exit();
+}
+
+// Loop through each record
+while ($row = mysqli_fetch_array($result)) {
+    $Id = $row['Wanted_Id'];
+    $Name = $row['Wanted_Name'];
+    $Loc = $row['Wanted_Location'];
+    $Crime = $row['Wanted_Crime'];
+    $Desc = $row['Wanted_Desc'];
+    $Photo = $row['Wanted_Image'];
+    // Your code to display or use the fetched data goes here
+}
+
+?>
+
                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
 
                             <tr>
@@ -60,10 +75,10 @@
                             </tr>
                         </table>
                         <?php
-                    }
-
-// Close the connection
-                    mysql_close($con);
+                    // Close the connection
+                   
+// Close connection
+mysqli_close($con);
                     ?>
 
                     <div class="cleaner"></div>

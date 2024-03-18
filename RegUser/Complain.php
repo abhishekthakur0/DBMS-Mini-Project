@@ -1,41 +1,69 @@
-<?php require_once('../Connections/CMS.php'); ?>
-<?php
-if (!function_exists("GetSQLValueString")) {
+<?php require_once('../Connections/CMS.php'); ?><?php
+// Define the function for SQL value preparation
+function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") {
+    // Establish the database connection
+    $CMS = mysqli_connect("localhost", "root", "", "cms");
 
-    function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") {
-        $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
-
-        $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
-
-        switch ($theType) {
-            case "text":
-                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-                break;
-            case "long":
-            case "int":
-                $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-                break;
-            case "double":
-                $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
-                break;
-            case "date":
-                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-                break;
-            case "defined":
-                $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-                break;
-        }
-        return $theValue;
+    // Check connection
+    if (mysqli_connect_errno()) {
+        die("Connection failed: " . mysqli_connect_error());
     }
 
+    // Escape special characters to prevent SQL injection
+    $theValue = mysqli_real_escape_string($CMS, $theValue);
+
+    switch ($theType) {
+        case "text":
+            $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+            break;
+        case "long":
+        case "int":
+            $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+            break;
+        case "double":
+            $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
+            break;
+        case "date":
+            $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+            break;
+        case "defined":
+            $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+            break;
+    }
+
+    // Close the connection
+    mysqli_close($CMS);
+
+    return $theValue;
 }
 
-mysql_select_db($database_CMS, $CMS);
+// Query to select station names
 $query_Recordset1 = "SELECT Station_Name FROM policestation_tbl";
-$Recordset1 = mysql_query($query_Recordset1, $CMS) or die(mysql_error());
-$row_Recordset1 = mysql_fetch_assoc($Recordset1);
-$totalRows_Recordset1 = mysql_num_rows($Recordset1);
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+// Establish the database connection
+$CMS = mysqli_connect("localhost", "root", "", "cms");
+
+// Perform the query
+$Recordset1 = mysqli_query($CMS, $query_Recordset1);
+if (!$Recordset1) {
+    die("Query failed: " . mysqli_error($CMS));
+}
+
+// Fetch the first row of the result
+$row_Recordset1 = mysqli_fetch_assoc($Recordset1);
+
+// Get the total number of rows
+$totalRows_Recordset1 = mysqli_num_rows($Recordset1);
+
+// Free the result set
+mysqli_free_result($Recordset1);
+
+// Close the connection
+mysqli_close($CMS);
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -79,18 +107,45 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
                                             <td><span class="style3">Select Police Station:</span></td>
                                             <td><label>
                                                     <select name="cmbStation" id="cmbStation">
-                                                        <?php
-                                                        do {
-                                                            ?>
-                                                            <option value="<?php echo $row_Recordset1['Station_Name'] ?>"><?php echo $row_Recordset1['Station_Name'] ?></option>
-                                                            <?php
-                                                        } while ($row_Recordset1 = mysql_fetch_assoc($Recordset1));
-                                                        $rows = mysql_num_rows($Recordset1);
-                                                        if ($rows > 0) {
-                                                            mysql_data_seek($Recordset1, 0);
-                                                            $row_Recordset1 = mysql_fetch_assoc($Recordset1);
-                                                        }
-                                                        ?>
+                                                    <?php
+// Establish the database connection
+$CMS = mysqli_connect("localhost", "root", "", "cms");
+
+// Check connection
+if (mysqli_connect_errno()) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+// Query to select station names
+$query_Recordset1 = "SELECT Station_Name FROM policestation_tbl";
+
+// Perform the query
+$Recordset1 = mysqli_query($CMS, $query_Recordset1);
+if (!$Recordset1) {
+    die("Query failed: " . mysqli_error($CMS));
+}
+
+// Initialize an empty array to store station names
+$stationNames = array();
+
+// Fetch each row as an associative array
+while ($row = mysqli_fetch_assoc($Recordset1)) {
+    // Add the station name to the array
+    $stationNames[] = $row['Station_Name'];
+}
+
+// Free the result set
+mysqli_free_result($Recordset1);
+
+// Close the connection
+mysqli_close($CMS);
+
+// Output the options
+foreach ($stationNames as $stationName) {
+    echo "<option value='$stationName'>$stationName</option>";
+}
+?>
+
                                                     </select>
                                                 </label></td>
                                         </tr>

@@ -33,7 +33,7 @@
                                     <p align="justify" class="style1"><span class="style2">U</span>ser can also see the list of Most Wanted Criminals in various area through this web application. Here you can also see the detail of Missing person so you can contact to the person if you find such persons.</p>
                                 </blockquote>                 </td>
                         </tr>
-                    </table>
+                    </table>    
                     <p>&nbsp;</p>
                     <div class="cleaner"></div>
                 </div> <!-- end of section_w760 -->

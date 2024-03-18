@@ -24,26 +24,42 @@
                     <h2>Missing Persons</h2>
                     <?php
 // Establish Connection with Database
-                    $con = mysql_connect("localhost", "root");
-// Select Database
-                    mysql_select_db("cms", $con);
+$con = mysqli_connect("localhost", "root", "", "cms");
+// Check connection
+if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    exit();
+}
+
 // Specify the query to execute
-                    $sql = "select * from missingperson_tbl order by Station_Name";
+$sql = "SELECT * FROM missingperson_tbl ORDER BY Station_Name";
 // Execute query
-                    $result = mysql_query($sql, $con);
-// Loop through each records 
-                    while ($row = mysql_fetch_array($result)) {
-                        $Id = $row['Person_Id'];
-                        $Name = $row['First_Name'] . " " . $row['Middle_Name'] . " " . $row['Last_Name'];
-                        $Gender = $row['Gender'];
-                        $Height = $row['Height'];
-                        $Weight = $row['Weight'];
-                        $Contact_Person = $row['Contact_Person'];
-                        $Contact_Address = $row['Contact_Address'];
-                        $Contact_City = $row['Contact_City'];
-                        $Contact_Mobile = $row['Contact_Mobile'];
-                        $Photo = $row['Photo'];
-                        ?>
+$result = mysqli_query($con, $sql);
+
+// Check if query execution was successful
+if (!$result) {
+    echo "Error: " . mysqli_error($con);
+    exit();
+}
+
+// Loop through each record
+while ($row = mysqli_fetch_array($result)) {
+    $Id = $row['Person_Id'];
+    $Name = $row['First_Name'] . " " . $row['Middle_Name'] . " " . $row['Last_Name'];
+    $Gender = $row['Gender'];
+    $Height = $row['Height'];
+    $Weight = $row['Weight'];
+    $Contact_Person = $row['Contact_Person'];
+    $Contact_Address = $row['Contact_Address'];
+    $Contact_City = $row['Contact_City'];
+    $Contact_Mobile = $row['Contact_Mobile'];
+    $Photo = $row['Photo'];
+    // Your code to display or use the fetched data goes here
+}
+
+
+?>
+
                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td colspan="5" bgcolor="#E3B71A">&nbsp;</td>
@@ -79,9 +95,9 @@
                             </tr>
                         </table>
                         <?php
-                    }
-// Close the connection
-                    mysql_close($con);
+ 
+                   // Close connection
+mysqli_close($con);
                     ?>
                     <p>&nbsp;</p>
                     <p>&nbsp;</p>

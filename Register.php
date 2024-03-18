@@ -2,16 +2,16 @@
 <?php
 if (!function_exists("GetSQLValueString")) {
 
-    function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") {
-        $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
-
-        $theValue = function_exists("mysql_real_escape_string") ? mysqli_real_escape_string($theValue) : mysql_escape_string($theValue);
-
+    function GetSQLValueString($con, $theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") {
+        $theValue = isset($theValue) ? $theValue : "";
+    
+        // Escape special characters to prevent SQL injection
+        $theValue = mysqli_real_escape_string($con, $theValue);
+    
         switch ($theType) {
             case "text":
                 $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
                 break;
-            case "long":
             case "int":
                 $theValue = ($theValue != "") ? intval($theValue) : "NULL";
                 break;
@@ -27,6 +27,7 @@ if (!function_exists("GetSQLValueString")) {
         }
         return $theValue;
     }
+    
 
 }
 
@@ -216,13 +217,14 @@ $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
                                                 ?>
                                                 <option value="<?php echo $row_Recordset1['Station_Name'] ?>"><?php echo $row_Recordset1['Station_Name'] ?></option>
                                                 <?php
-                                            } while ($row_Recordset1 = mysql_fetch_assoc($Recordset1));
-                                            $rows = mysql_num_rows($Recordset1);
-                                            if ($rows > 0) {
-                                                mysql_data_seek($Recordset1, 0);
-                                                $row_Recordset1 = mysql_fetch_assoc($Recordset1);
-                                            }
-                                            ?>
+} while ($row_Recordset1 = mysqli_fetch_assoc($Recordset1));
+$rows = mysqli_num_rows($Recordset1);
+if ($rows > 0) {
+    mysqli_data_seek($Recordset1, 0);
+    $row_Recordset1 = mysqli_fetch_assoc($Recordset1);
+}
+?>
+
                                         </select>
                                     </label></td>
                             </tr>
@@ -251,9 +253,10 @@ $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
                             <tr>
                                 <td>&nbsp;</td>
                                 <td><label>
-                                        <input type="submit" name="button" id="button" value="Submit" />
+                                        <input type="submit" name="button" id="button" value="Submit" onclick="return confirm('Are you sure you want to submit?');" />
                                     </label></td>
                             </tr>
+                            
                         </table>
                     </form>
                     <p>&nbsp;</p>
@@ -280,5 +283,6 @@ $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
     </body>
 </html>
 <?php
-mysql_free_result($Recordset1);
-?>
+mysqli_free_result($Recordset1);
+
+?>  
